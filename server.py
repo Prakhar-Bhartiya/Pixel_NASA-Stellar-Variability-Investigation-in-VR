@@ -22,7 +22,11 @@ def get_lightcurve_plot():
     plt.ylabel("Flux Value")
     plt.savefig('plot.jpg')
     plt.close("all")
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 7459de0194f42c32603e7dd9b04ba8c8fbf5ecd9
     return send_file('plot.jpg', mimetype='image/jpeg')
 
 
@@ -43,4 +47,8 @@ def home_page():
 
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     app.run()
+=======
+    app.run(port = 7777)
+>>>>>>> 7459de0194f42c32603e7dd9b04ba8c8fbf5ecd9
