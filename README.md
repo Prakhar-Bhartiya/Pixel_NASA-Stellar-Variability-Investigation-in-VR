@@ -7,7 +7,7 @@
 ### Full_Demo : <https://youtu.be/Fq0YKQIpL2g>
 
 ### Basic Working FlowDiagram :
-<img height="50" width="50" src="https://github.com/Prakhar-Bhartiya/Pixel_NASA-Stellar-Variability-Investigation-in-VR/blob/main/github_resources/Basic_working.jpg">
+<img height="500" width="500" src="https://github.com/Prakhar-Bhartiya/Pixel_NASA-Stellar-Variability-Investigation-in-VR/blob/main/github_resources/Basic_working.jpg">
 
 ### Future Improvements :
 - Host server to cloud services like AWS or GCP rather using local Flask server.
