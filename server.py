@@ -1,6 +1,7 @@
 from flask import *
 import json,time
-
+import requests
+from k2flix import *
 import lightkurve as lk
 import numpy as np
 import matplotlib
@@ -10,34 +11,57 @@ import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
-
-
-@app.route('/data/plot')
-def get_lightcurve_plot():
-
-    search_results = lk.search_lightcurve('Pi Mensae', mission='TESS', author='SPOC')
-    lc = search_results[0].download()
-    plt.scatter(lc.time.value, lc.flux.value)
-    plt.xlabel("Time")
-    plt.ylabel("Flux Value")
-    plt.savefig('plot.jpg')
-    plt.close("all")
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> 7459de0194f42c32603e7dd9b04ba8c8fbf5ecd9
-    return send_file('plot.jpg', mimetype='image/jpeg')
-
-
-
-@app.route('/data/<star_id>')
-def get_data(star_id):
-    # Eg. star_id = "KIC 8462852"
-    pixelfile = lk.search_targetpixelfile("KIC "+str(star_id), quarter=16).download()
-    lc = pixelfile.to_lightcurve(aperture_mask='all')
-    data = {'Time Seires':list(lc.time.value)[:10]}
+# http://192.168.0.238:5000/mission/?star_id=261136679
+@app.route('/mission/')
+def get_mission_info():
+    paramters = request.args.to_dict()
+    search_results = lk.search_lightcurve('TIC'+str(paramters['star_id']))
+    data = {'Mission':str(set(zip(search_results.mission, search_results.year)))}
     return json.dumps(data)
+
+# http://192.168.0.238:5000/plot/lightcure/simple/?star_id=261136679&sector=4
+@app.route('/plot/lightcure/simple/')
+def get_lightcurve_simple_plot():
+    paramters = request.args.to_dict()
+    search_results = lk.search_lightcurve('TIC'+str(paramters['star_id']), sector=int(paramters['sector']))
+    #preprocessing
+    lc = search_results[0].download()
+    lc = lc.remove_outliers(sigma=5)
+    lc = lc.flatten(window_length=501, break_tolerance=50)
+
+    plt.plot(ax=lc.plot())
+    plt.savefig('simple_plot.jpg')
+    return send_file('simple_plot.jpg', mimetype='image/jpeg')
+
+# http://192.168.0.238:5000/plot/lightcure/periodogram/?star_id=261136679&sector=4
+@app.route('/plot/lightcure/periodogram/')
+def get_lightcurve_periodogram_plot():
+    paramters = request.args.to_dict()
+    search_results = lk.search_lightcurve('TIC'+str(paramters['star_id']), sector=int(paramters['sector']))
+    #preprocessing
+    lc = search_results[0].download()
+    lc = lc.remove_outliers(sigma=5)
+    lc = lc.flatten(window_length=501, break_tolerance=50)
+
+    plt.plot(ax = lc.to_periodogram(method='bls').plot())
+    plt.savefig('periodogram_plot.jpg')
+    return send_file('periodogram_plot.jpg', mimetype='image/jpeg')
+
+
+# http://192.168.0.238:5000/plot/flix/?star_id=261136679&sector=4
+@app.route('/plot/flix/')
+def get_flix_video():
+    paramters = request.args.to_dict()
+    search_results =  lk.search_lightcurve('TIC'+str(paramters['star_id']), sector=int(paramters['sector']))
+
+    url = "https://mast.stsci.edu/tesscut/api/v0.1/astrocut?ra=" + str(search_results[0].ra[0]) + "&dec=" + str(search_results[0].dec[0]) + "&y=30&x=30&units=px&sector=1"
+    data = requests.get(url)
+    open('flix_in.fits', 'wb').write(data.content)
+
+    tpf = TargetPixelFile('flix_in.fits')
+    loc = "flix_out.mp4"
+    tpf.save_movie(loc)
+    return send_file('flix_out.mp4', mimetype='video/mp4')
 
 
 
@@ -47,8 +71,6 @@ def home_page():
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD
-    app.run()
-=======
-    app.run(port = 7777)
->>>>>>> 7459de0194f42c32603e7dd9b04ba8c8fbf5ecd9
+    # app.run(host='192.168.0.238', port=5000, debug=True, threaded=False)
+    # below setting and network type = 'private' rather public
+    app.run(host='0.0.0.0')
