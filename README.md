@@ -6,6 +6,10 @@
 
 #### Full_Demo : <https://youtu.be/Fq0YKQIpL2g>
 
+#### Timeline:
+- Day 1 (Oct 1): Study about basic and think about idea + Basic Flask server setup => connect with unity
+- Day 2 (Oct 2): Scene design and resource hunt, wrap it up + Github setup
+
 ### Basic Working FlowDiagram :
 <img height="700" width="700" src="https://github.com/Prakhar-Bhartiya/Pixel_NASA-Stellar-Variability-Investigation-in-VR/blob/main/github_resources/Basic_working.jpg">
 
