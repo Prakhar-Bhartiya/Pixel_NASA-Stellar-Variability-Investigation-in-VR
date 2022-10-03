@@ -13,3 +13,4 @@
 - Host server to cloud services like AWS or GCP rather using local Flask server.
 - Look into useful visualization tools for studying stellar variability, such as graphs and simulations.(contact any expert)
 - Better learning resources(videos) and gamify learning experience 
+- Skybox Update :  1:1 corelation with real star coordinates(astropy + Skycord) and texture from telescope(.fits), add cameralook at motion
